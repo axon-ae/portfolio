@@ -3,78 +3,332 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Моё Видео Портфолио</title>
+  <title>Axon — Видео Портфолио</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body { font-family: 'Segoe UI', sans-serif; }
-    .video-grid iframe { aspect-ratio: 16/9; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+
+    :root {
+      --accent: #a3e635;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    
+    .title-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .hero-bg {
+      background: radial-gradient(at center bottom, #111111 0%, #000000 70%);
+    }
+
+    .video-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .video-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 25px 50px -12px rgb(163 230 69 / 0.25);
+    }
+
+    .video-card iframe {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .video-card:hover iframe {
+      transform: scale(1.05);
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.6));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .video-card:hover .play-overlay {
+      opacity: 1;
+    }
+
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #a3e635;
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .section-header {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-header:after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, #a3e635, #84cc16);
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 9999px;
+    }
+
+    .smooth-scroll {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
-<body class="bg-zinc-950 text-white">
-  <!-- Навбар -->
-  <nav class="bg-black py-4 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-lime-400">ВИДЕО ПОРТФОЛИО</h1>
-      <div class="space-x-8">
-        <a href="#about" class="hover:text-lime-400">Обо мне</a>
-        <a href="#portfolio" class="hover:text-lime-400">Работы</a>
-        <a href="#contact" class="hover:text-lime-400">Контакты</a>
+<body class="bg-zinc-950 text-white smooth-scroll overflow-x-hidden">
+
+  <!-- Навбар (улучшенный + мобильная версия) -->
+  <nav class="bg-black/90 backdrop-blur-xl border-b border-white/10 py-5 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-lime-400 rounded-2xl flex items-center justify-center text-black font-bold text-2xl title-font">A</div>
+        <h1 class="text-3xl font-semibold tracking-tighter title-font text-lime-400">AXON</h1>
+      </div>
+
+      <!-- Desktop menu -->
+      <div class="hidden md:flex items-center gap-10 text-sm font-medium">
+        <a href="#about" class="nav-link text-zinc-300 hover:text-white transition">Обо мне</a>
+        <a href="#portfolio" class="nav-link text-zinc-300 hover:text-white transition">Работы</a>
+        <a href="#skills" class="nav-link text-zinc-300 hover:text-white transition">Навыки</a>
+        <a href="#contact" class="nav-link text-zinc-300 hover:text-white transition">Контакты</a>
+      </div>
+
+      <!-- Кнопка CTA -->
+      <a href="#contact" 
+         class="hidden md:block px-7 py-3 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-3xl transition-all active:scale-95">
+        Написать мне
+      </a>
+
+      <!-- Мобильное меню (иконка) -->
+      <button id="mobile-menu-btn"
+              class="md:hidden w-10 h-10 flex items-center justify-center text-2xl">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Мобильное меню -->
+    <div id="mobile-menu" class="hidden md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10 py-6">
+      <div class="flex flex-col gap-6 px-6 text-center text-lg font-medium">
+        <a href="#about" class="py-2 hover:text-lime-400">Обо мне</a>
+        <a href="#portfolio" class="py-2 hover:text-lime-400">Работы</a>
+        <a href="#skills" class="py-2 hover:text-lime-400">Навыки</a>
+        <a href="#contact" class="py-2 hover:text-lime-400">Контакты</a>
+        <a href="#contact" class="mt-4 block bg-lime-400 text-black py-4 rounded-3xl font-semibold">Написать в Telegram</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black text-center px-6">
-    <div>
-      <h2 class="text-5xl font-bold mb-4">Привет, я <span class="text-lime-400">Axon</span></h2>
-      <p class="text-xl text-zinc-400 mb-8">Видеограф • Монтажёр • Креатор</p>
-      <a href="#portfolio" class="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition">Смотреть работы ↓</a>
-    </div>
-  </section>
-
-  <!--Я начинающий видеомонтажер-->
-  <section id="about" class="py-20 bg-zinc-900">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-10">Обо мне</h2>
-      <p class="text-lg text-zinc-300 text-center">
-      Предпочитаю минималистичный стиль
-    </div>
-  </section>
-
-  <!-- Портфолио -->
-  <section id="portfolio" class="py-20">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-4xl font-bold text-center mb-12">Мои работы</h2>
+  <!-- Hero (более кинематографичный) -->
+  <section class="hero-bg h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Фоновые частицы (лёгкий эффект) -->
+    <div class="absolute inset-0 bg-[radial-gradient(#a3e635_0.8px,transparent_1px)] bg-[length:40px_40px] opacity-10"></div>
+    
+    <div class="relative z-10 text-center px-6 max-w-4xl">
+      <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-6 py-2 rounded-3xl mb-6 text-sm tracking-widest">
+        <span class="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></span>
+        НАЧИНАЮЩИЙ ВИДЕОМОНТАЖЁР
+      </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 video-grid">
+      <h2 class="text-7xl md:text-8xl font-bold tracking-tighter title-font leading-none mb-6">
+        Я — <span class="text-lime-400">AXON</span>
+      </h2>
+      
+      <p class="text-2xl md:text-3xl text-zinc-400 max-w-md mx-auto mb-12">
+        Создаю атмосферные ролики, которые цепляют с первых секунд
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#portfolio" 
+           class="group bg-lime-400 text-black px-10 py-5 rounded-3xl font-semibold text-lg flex items-center justify-center gap-3 hover:bg-lime-300 transition-all">
+          Смотреть работы
+          <span class="text-xl group-active:rotate-45 transition">↓</span>
+        </a>
         
-        <!-- ВИДЕО 1 (замени ссылку) -->
-        <div class="bg-zinc-900 rounded-2xl overflow-hidden">
-          <iframe width="100%" src="https://www.youtube.com/embed/dQw4w9wgccc" 
-            title="Видео 1" frameborder="0" allowfullscreen></iframe>
-          <div class="p-4">
-            <h3 class="font-semibold">Название видео 1</h3>
-            <p class="text-zinc-400 text-sm">Короткое описание • 2025</p>
+        <a href="#contact" 
+           class="border border-white/30 hover:border-white/70 px-10 py-5 rounded-3xl font-medium text-lg transition-all">
+          Давай сотрудничать
+        </a>
+      </div>
+    </div>
+
+    <!-- Скролл-индикатор -->
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-xs tracking-widest opacity-60">
+      <div class="w-px h-12 bg-gradient-to-b from-transparent via-white to-transparent"></div>
+      SCROLL
+    </div>
+  </section>
+
+  <!-- Обо мне (минималистично + фото + текст) -->
+  <section id="about" class="py-24 bg-zinc-900">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+      <!-- Левая колонка: текст -->
+      <div class="space-y-8">
+        <div class="section-header">
+          <h2 class="text-5xl font-bold title-font tracking-tighter">Привет, я Axon</h2>
+        </div>
+        
+        <div class="text-xl text-zinc-300 leading-relaxed max-w-lg">
+          Начинающий видеомонтажёр с душой. 
+          Предпочитаю минималистичный стиль, чистый монтаж и сильную атмосферу. 
+          Каждый ролик — это маленькая история, которую хочется досмотреть до конца.
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="bg-zinc-800 rounded-2xl px-6 py-4">
+            <div class="text-lime-400 text-4xl font-bold">15+</div>
+            <div class="text-xs text-zinc-400">проектов</div>
+          </div>
+          <div class="bg-zinc-800 rounded-2xl px-6 py-4">
+            <div class="text-lime-400 text-4xl font-bold">2025</div>
+            <div class="text-xs text-zinc-400">год старта</div>
           </div>
         </div>
 
-        <!-- ВИДЕО 2 -->
-        <div class="bg-zinc-900 rounded-2xl overflow-hidden">
-          <iframe width="100%" src="https://www.youtube.com/embed/VIDEO_ID_2" 
-            title="Видео 2" frameborder="0" allowfullscreen></iframe>
-          <div class="p-4">
-            <h3 class="font-semibold">Название видео 2</h3>
-            <p class="text-zinc-400 text-sm">Короткое описание • 2025</p>
+        <a href="#portfolio" 
+           class="inline-flex items-center gap-3 text-lime-400 hover:text-lime-300 font-medium group">
+          Смотреть мои работы
+          <span class="text-3xl transition group-hover:translate-x-2">→</span>
+        </a>
+      </div>
+
+      <!-- Правая колонка: фото + стиль -->
+      <div class="relative">
+        <div class="aspect-square bg-zinc-800 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+          <!-- Здесь можешь поставить своё фото -->
+          <img src="https://picsum.photos/id/1015/800/800" 
+               alt="Axon" 
+               class="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-700">
+        </div>
+        
+        <!-- Декоративный бейджик -->
+        <div class="absolute -bottom-6 -right-6 bg-black border border-lime-400/30 rounded-3xl px-8 py-5 text-center shadow-xl">
+          <div class="text-lime-400 text-sm font-medium tracking-wider">МИНИМАЛИЗМ</div>
+          <div class="text-4xl font-bold title-font">+ АТМОСФЕРА</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Навыки (новая секция для портфолио) -->
+  <section id="skills" class="py-20 bg-black">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <div class="section-header">
+          <h2 class="text-5xl font-bold title-font tracking-tighter">Что я умею</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="bg-zinc-900/70 border border-white/5 rounded-3xl p-8 hover:border-lime-400/30 transition-all group">
+          <i class="fa-solid fa-scissors text-4xl text-lime-400 mb-6"></i>
+          <h4 class="font-semibold text-2xl mb-2">Монтаж</h4>
+          <p class="text-zinc-400">Premiere Pro + DaVinci Resolve</p>
+        </div>
+        <div class="bg-zinc-900/70 border border-white/5 rounded-3xl p-8 hover:border-lime-400/30 transition-all group">
+          <i class="fa-solid fa-film text-4xl text-lime-400 mb-6"></i>
+          <h4 class="font-semibold text-2xl mb-2">Цветокоррекция</h4>
+          <p class="text-zinc-400">Киношный лук и настроение</p>
+        </div>
+        <div class="bg-zinc-900/70 border border-white/5 rounded-3xl p-8 hover:border-lime-400/30 transition-all group">
+          <i class="fa-solid fa-music text-4xl text-lime-400 mb-6"></i>
+          <h4 class="font-semibold text-2xl mb-2">Звук</h4>
+          <p class="text-zinc-400">Чистка, музыка, эффекты</p>
+        </div>
+        <div class="bg-zinc-900/70 border border-white/5 rounded-3xl p-8 hover:border-lime-400/30 transition-all group">
+          <i class="fa-solid fa-bolt text-4xl text-lime-400 mb-6"></i>
+          <h4 class="font-semibold text-2xl mb-2">Motion &amp; эффекты</h4>
+          <p class="text-zinc-400">After Effects базовый уровень</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Портфолио (улучшенные карточки с оверлеем) -->
+  <section id="portfolio" class="py-24 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-end mb-12">
+        <div>
+          <div class="section-header">
+            <h2 class="text-5xl font-bold title-font tracking-tighter">Мои работы</h2>
+          </div>
+          <p class="text-zinc-400 mt-3">Каждый ролик — это новая история</p>
+        </div>
+        <a href="#" class="hidden md:flex items-center gap-3 text-lime-400 hover:text-white text-sm font-medium">
+          Смотреть все на YouTube 
+          <span class="text-2xl">→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Карточка 1 -->
+        <div class="video-card bg-zinc-900 rounded-3xl overflow-hidden relative group">
+          <div class="relative">
+            <iframe width="100%" height="315" 
+              src="https://www.youtube.com/embed/dQw4w9wgccc" 
+              title="Видео 1" frameborder="0" allowfullscreen></iframe>
+            <div class="play-overlay">
+              <i class="fa-solid fa-play text-6xl text-white drop-shadow-2xl"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-semibold text-xl">Reel 2025 • Тизер</h3>
+            <p class="text-zinc-400 text-sm mt-1">Минималистичный монтаж • 0:45</p>
           </div>
         </div>
 
-        <!-- ВИДЕО 3 -->
-        <div class="bg-zinc-900 rounded-2xl overflow-hidden">
-          <iframe width="100%" src="https://www.youtube.com/embed/VIDEO_ID_3" 
-            title="Видео 3" frameborder="0" allowfullscreen></iframe>
-          <div class="p-4">
-            <h3 class="font-semibold">Название видео 3</h3>
-            <p class="text-zinc-400 text-sm">Короткое описание • 2025</p>
+        <!-- Карточка 2 -->
+        <div class="video-card bg-zinc-900 rounded-3xl overflow-hidden relative group">
+          <div class="relative">
+            <iframe width="100%" height="315" 
+              src="https://www.youtube.com/embed/VIDEO_ID_2" 
+              title="Видео 2" frameborder="0" allowfullscreen></iframe>
+            <div class="play-overlay">
+              <i class="fa-solid fa-play text-6xl text-white drop-shadow-2xl"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-semibold text-xl">Название видео 2</h3>
+            <p class="text-zinc-400 text-sm mt-1">Короткое описание • 2025</p>
+          </div>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="video-card bg-zinc-900 rounded-3xl overflow-hidden relative group">
+          <div class="relative">
+            <iframe width="100%" height="315" 
+              src="https://www.youtube.com/embed/VIDEO_ID_3" 
+              title="Видео 3" frameborder="0" allowfullscreen></iframe>
+            <div class="play-overlay">
+              <i class="fa-solid fa-play text-6xl text-white drop-shadow-2xl"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-semibold text-xl">Название видео 3</h3>
+            <p class="text-zinc-400 text-sm mt-1">Короткое описание • 2025</p>
           </div>
         </div>
 
@@ -84,17 +338,58 @@
     </div>
   </section>
 
-  <!-- Контакты -->
-  <section id="contact" class="py-20 bg-black">
+  <!-- Контакты (более стильные) -->
+  <section id="contact" class="py-24 bg-gradient-to-b from-black to-zinc-950">
     <div class="max-w-4xl mx-auto px-6 text-center">
-      <h2 class="text-4xl font-bold mb-8">Связаться со мной</h2>
-      <p class="text-xl mb-8">Telegram: @werundiy<br>Instagram: @твой_ник<br>Email: ты@mail.ru</p>
-      <a href="https://t.me/твой_ник" class="bg-lime-400 text-black px-10 py-4 rounded-full font-bold inline-block hover:bg-lime-300">Написать в Telegram</a>
+      <h2 class="text-5xl font-bold title-font tracking-tighter mb-8">Давай создадим что-то крутое вместе</h2>
+      
+      <div class="flex flex-col md:flex-row gap-8 justify-center mb-12">
+        <div class="bg-zinc-900 rounded-3xl px-8 py-6 flex-1">
+          <i class="fa-brands fa-telegram text-4xl text-lime-400 mb-4"></i>
+          <div class="font-medium">@werundiy</div>
+          <a href="https://t.me/werundiy" 
+             class="block mt-6 text-lime-400 hover:text-lime-300 font-medium">Написать в Telegram →</a>
+        </div>
+        
+        <div class="bg-zinc-900 rounded-3xl px-8 py-6 flex-1">
+          <i class="fa-brands fa-instagram text-4xl text-lime-400 mb-4"></i>
+          <div class="font-medium">@твой_ник</div>
+          <a href="https://instagram.com/твой_ник" 
+             class="block mt-6 text-lime-400 hover:text-lime-300 font-medium">Перейти в Instagram →</a>
+        </div>
+      </div>
+
+      <p class="text-zinc-400 mb-8">Или просто напиши на почту</p>
+      <a href="mailto:ты@mail.ru" 
+         class="inline-block text-2xl underline decoration-lime-400 decoration-1 underline-offset-8 hover:text-lime-300 transition">
+        ты@mail.ru
+      </a>
     </div>
   </section>
 
-  <footer class="py-8 text-center text-zinc-500 text-sm">
-    © 2026 Axon. Все права защищены.
+  <!-- Footer -->
+  <footer class="bg-black py-12 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 text-center text-zinc-500 text-sm">
+      © 2026 Axon. Сделано с душой и минимализмом.
+      <div class="mt-4 flex justify-center gap-6 text-lg">
+        <a href="#" class="hover:text-lime-400"><i class="fa-brands fa-telegram"></i></a>
+        <a href="#" class="hover:text-lime-400"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="hover:text-lime-400"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
   </footer>
+
+  <script>
+    // Мобильное меню
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      menuBtn.innerHTML = mobileMenu.classList.contains('hidden') 
+        ? '<i class="fa-solid fa-bars"></i>' 
+        : '<i class="fa-solid fa-xmark"></i>';
+    });
+  </script>
 </body>
-</html>
+  </html>
