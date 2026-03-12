@@ -232,4 +232,25 @@
     function renderPortfolio() {
       const grid = document.getElementById('portfolio-grid');
       grid.innerHTML = works.map(work => `
-        <div class="video-card bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer group" onclick="openVideo('${work.id
+        <div class="video-card bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer group" onclick="openVideo('${work.id}')">
+          <div class="relative">
+            <img src="${work.thumb}" class="w-full aspect-video object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-center justify-center">
+              <i class="fa-solid fa-play text-6xl text-white/90 group-hover:scale-110 transition"></i>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-semibold text-xl mb-1">${work.title}</h3>
+            <p class="text-violet-400 text-sm">${work.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.onload = renderPortfolio;
+
+    // ESC close
+    document.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
+  </script>
+</body>
+  </html>    
